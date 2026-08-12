@@ -1,7 +1,9 @@
 :root {
   --clear: #2e7d5b;
   --mixed: #b8862b;
-  --clouded: #8d3b3b;
+  /* 6.92:1 mot --bg (#10141a) — WCAG AA for normal tekst kreves fordi denne
+     brukes i .error, ikke bare i overskriften. */
+  --clouded: #e08585;
   --bg: #10141a;
   --fg: #eef2f7;
   --muted: #93a1b3;
