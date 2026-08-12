@@ -1,0 +1,14 @@
+# Brainstorming-mockups fra superpowers-companion
+.superpowers/
+
+# Serena-indeks
+.serena/
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+
+# Vercel
+.vercel/
