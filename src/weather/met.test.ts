@@ -7,11 +7,11 @@ describe('parseMet', () => {
     expect(parseMet(fixture).source).toBe('met')
   })
 
-  it('normaliserer medium til mid', () => {
+  it('normaliserer medium til mid, med lagene i riktig rekkefølge', () => {
     const first = parseMet(fixture).samples[0]
-    expect(typeof first.mid).toBe('number')
-    expect(first.mid).toBeGreaterThanOrEqual(0)
-    expect(first.mid).toBeLessThanOrEqual(100)
+    // Pinner de faktiske verdiene fra fixturen, ikke bare et gyldig område,
+    // slik at en ombytting av low/medium/high faktisk blir fanget opp.
+    expect(first).toMatchObject({ low: 0, mid: 94.5, high: 97.6 })
   })
 
   it('gir stigende tider som Date', () => {
