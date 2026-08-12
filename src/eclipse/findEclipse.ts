@@ -39,6 +39,9 @@ export function findEclipse(
 ): EclipseCircumstances | null {
   const observer = new Observer(lat, lon, elevationM)
   const info = SearchLocalSolarEclipse(from, observer)
+  // SearchLocalSolarEclipse er ikke-nullbar i biblioteket i praksis (den kaster
+  // heller enn å returnere falsy), men denne guarden finnes for å oppfylle
+  // spesifikasjonens `| null`-signatur. Ikke fjern den.
   if (!info) return null
   return {
     kind: toKind(info.kind),
