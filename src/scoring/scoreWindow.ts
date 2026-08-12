@@ -11,8 +11,12 @@ function verdictFor(score: number): VerdictKind {
   return 'clouded'
 }
 
-/** Lineær interpolasjon av solhøyde mellom kontakttidene. */
-function altitudeAt(time: Date, c: EclipseCircumstances): number {
+/**
+ * Lineær interpolasjon av solhøyde mellom kontakttidene. Eksportert fordi
+ * tidslinjen i UI-et fargelegger hvert steg med samme solhøyde som scoringen
+ * bruker; to kopier av denne ville kunne gli fra hverandre.
+ */
+export function altitudeAt(time: Date, c: EclipseCircumstances): number {
   const t = time.getTime()
   const peak = c.peak.time.getTime()
   if (t <= peak) {
