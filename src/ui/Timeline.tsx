@@ -1,6 +1,6 @@
 import type { EclipseCircumstances } from '../eclipse/types'
 import type { CloudSample } from '../weather/types'
-import { altitudeAt } from '../scoring/scoreWindow'
+import { altitudeAt, verdictFor } from '../scoring/scoreWindow'
 import { scoreSample } from '../scoring/weights'
 import { formatTime } from '../format'
 
@@ -11,9 +11,18 @@ type Props = {
 }
 
 function colorFor(score: number): string {
-  if (score >= 70) return 'var(--clear)'
-  if (score >= 40) return 'var(--mixed)'
-  return 'var(--clouded)'
+  switch (verdictFor(score)) {
+    case 'clear':
+      return 'var(--clear)'
+    case 'mixed':
+      return 'var(--mixed)'
+    case 'clouded':
+      return 'var(--clouded)'
+    case 'unknown':
+      // verdictFor never returns 'unknown' for a numeric score, but VerdictKind
+      // includes it; --mixed reads as "uncertain" rather than a false clear/clouded claim.
+      return 'var(--mixed)'
+  }
 }
 
 export function Timeline({ samples, circumstances, timeZone }: Props) {

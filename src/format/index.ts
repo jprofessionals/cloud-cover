@@ -20,3 +20,12 @@ export function formatTime(date: Date, timeZone: string): string {
     timeZone,
   }).format(date)
 }
+
+export function formatDate(date: Date, timeZone: string): string {
+  return new Intl.DateTimeFormat('nb-NO', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone,
+  }).format(date)
+}

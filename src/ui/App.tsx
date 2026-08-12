@@ -4,6 +4,7 @@ import { Verdict } from './Verdict'
 import { Timeline } from './Timeline'
 import { useForecast } from './useForecast'
 import type { Place } from '../geo/geocode'
+import { formatDate } from '../format'
 import './app.css'
 
 export default function App() {
@@ -27,7 +28,7 @@ export default function App() {
 
         {state.status === 'no-weather' && state.circumstances && (
           <p className="hint">
-            Formørkelsen er {state.circumstances.peak.time.toLocaleDateString('nb-NO')}, men
+            Formørkelsen er {formatDate(state.circumstances.peak.time, timeZone)}, men
             værvarsel finnes bare omtrent 16 dager fram i tid. Kom tilbake nærmere datoen.
           </p>
         )}

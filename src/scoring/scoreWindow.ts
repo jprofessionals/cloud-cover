@@ -5,7 +5,7 @@ import { scoreSample } from './weights'
 
 const TERRAIN_ALTITUDE_LIMIT = 3
 
-function verdictFor(score: number): VerdictKind {
+export function verdictFor(score: number): VerdictKind {
   if (score >= 70) return 'clear'
   if (score >= 40) return 'mixed'
   return 'clouded'
