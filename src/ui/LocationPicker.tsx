@@ -15,15 +15,22 @@ export function LocationPicker({ value, onChange }: Props) {
   // Følger med hvilket søk som ble sendt sist, slik at et sent svar på et
   // eldre søk ikke overskriver resultatet av et nyere.
   const latestQuery = useRef('')
+  // Husker hvilken GPS-posisjon som sist er adoptert, slik at vi kan skille
+  // en fersk posisjon (adopter den, selv om brukeren har valgt noe annet
+  // etterpå — knappen skal aldri bli dødt) fra samme posisjon liggende igjen
+  // fra et tidligere kall (skal ikke dra brukeren tilbake ved en vilkårlig
+  // rerender).
+  const adoptedFixId = useRef(0)
 
-  // Adopter posisjonen fra nettleseren automatisk, men bare når brukeren
-  // ikke allerede har valgt et sted. Kjøres som effekt (ikke under render)
-  // for å unngå å sette parent-state mens komponenten rendrer.
+  // Adopter posisjonen fra nettleseren automatisk hver gang en ny posisjon
+  // kommer inn. Kjøres som effekt (ikke under render) for å unngå å sette
+  // parent-state mens komponenten rendrer.
   useEffect(() => {
-    if (geo.status === 'granted' && geo.place && !value) {
+    if (geo.status === 'granted' && geo.place && geo.fixId !== adoptedFixId.current) {
+      adoptedFixId.current = geo.fixId
       onChange(geo.place)
     }
-  }, [geo.status, geo.place, value, onChange])
+  }, [geo.status, geo.place, geo.fixId, onChange])
 
   async function search(next: string) {
     setQuery(next)

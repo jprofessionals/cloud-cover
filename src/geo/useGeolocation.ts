@@ -6,6 +6,10 @@ export type GeolocationStatus = 'idle' | 'asking' | 'granted' | 'denied'
 export function useGeolocation() {
   const [place, setPlace] = useState<Place | null>(null)
   const [status, setStatus] = useState<GeolocationStatus>('idle')
+  // Øker for hver nye posisjon vi mottar, slik at forbrukere kan skille en
+  // fersk posisjon (skal adopteres) fra samme posisjon liggende igjen fra et
+  // tidligere kall (skal ikke overstyre et senere manuelt valg).
+  const [fixId, setFixId] = useState(0)
 
   const request = useCallback(() => {
     if (!navigator.geolocation) {
@@ -24,6 +28,7 @@ export function useGeolocation() {
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         })
         setStatus('granted')
+        setFixId((id) => id + 1)
       },
       // Avslag er ikke en feil. Brukeren får søkefeltet i stedet.
       () => setStatus('denied'),
@@ -31,5 +36,5 @@ export function useGeolocation() {
     )
   }, [])
 
-  return { place, status, request }
+  return { place, status, fixId, request }
 }

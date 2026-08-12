@@ -92,4 +92,21 @@ describe('LocationPicker — adopter GPS-posisjon én gang', () => {
 
     expect(onChange).toHaveBeenCalledTimes(1)
   })
+
+  it('adopterer en fersk GPS-posisjon selv etter at brukeren har valgt et sted fra søket', async () => {
+    mockGeolocation({ latitude: 60.39, longitude: 5.32 })
+    const onChange = vi.fn()
+
+    // Brukeren har allerede valgt et sted fra søket.
+    render(<LocationPicker value={KOLSAAS} onChange={onChange} />)
+
+    // "Bruk min posisjon" skal fortsatt virke, ikke være dødt fordi et sted
+    // allerede er valgt.
+    fireEvent.click(screen.getByText('Bruk min posisjon'))
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1))
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'Min posisjon', lat: 60.39, lon: 5.32 }),
+    )
+  })
 })
