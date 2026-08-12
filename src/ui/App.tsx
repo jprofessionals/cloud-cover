@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { LocationPicker } from './LocationPicker'
 import { Verdict } from './Verdict'
 import { Timeline } from './Timeline'
+import { EclipseFacts } from './EclipseFacts'
 import { useForecast } from './useForecast'
 import type { Place } from '../geo/geocode'
 import { formatDate } from '../format'
@@ -27,14 +28,22 @@ export default function App() {
         )}
 
         {state.status === 'no-weather' && state.circumstances && (
-          <p className="hint">
-            Formørkelsen er {formatDate(state.circumstances.peak.time, timeZone)}, men
-            værvarsel finnes bare omtrent 16 dager fram i tid. Kom tilbake nærmere datoen.
-          </p>
+          <>
+            <p className="hint">
+              Formørkelsen er {formatDate(state.circumstances.peak.time, timeZone)}, men
+              værvarsel finnes bare omtrent 16 dager fram i tid. Kom tilbake nærmere datoen.
+            </p>
+            <EclipseFacts circumstances={state.circumstances} timeZone={timeZone} />
+          </>
         )}
 
         {state.status === 'error' && (
-          <p className="error">Fikk ikke hentet skydata: {state.error}</p>
+          <>
+            <p className="error">Fikk ikke hentet skydata: {state.error}</p>
+            {state.circumstances && (
+              <EclipseFacts circumstances={state.circumstances} timeZone={timeZone} />
+            )}
+          </>
         )}
 
         {state.status === 'ready' && state.circumstances && state.score && state.forecast && (
