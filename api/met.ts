@@ -3,12 +3,24 @@ const MET_ENDPOINT = 'https://api.met.no/weatherapi/locationforecast/2.0/complet
 
 export const config = { runtime: 'edge' }
 
+/**
+ * Tolker en spørreparameter som en koordinat. Avviser fravær og tom streng
+ * eksplisitt — Number(null) og Number('') er begge 0, som ellers ville
+ * sluppet gjennom Number.isFinite og gitt et lydløst (0, 0)-oppslag.
+ */
+function parseCoordinate(raw: string | null, min: number, max: number): number | null {
+  if (!raw) return null
+  const value = Number(raw)
+  if (!Number.isFinite(value) || value < min || value > max) return null
+  return value
+}
+
 export default async function handler(request: Request): Promise<Response> {
   const incoming = new URL(request.url)
-  const lat = Number(incoming.searchParams.get('lat'))
-  const lon = Number(incoming.searchParams.get('lon'))
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-    return new Response(JSON.stringify({ error: 'lat og lon må være tall' }), {
+  const lat = parseCoordinate(incoming.searchParams.get('lat'), -90, 90)
+  const lon = parseCoordinate(incoming.searchParams.get('lon'), -180, 180)
+  if (lat === null || lon === null) {
+    return new Response(JSON.stringify({ error: 'lat og lon må være gyldige koordinater' }), {
       status: 400,
       headers: { 'content-type': 'application/json' },
     })
