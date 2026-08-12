@@ -12,3 +12,6 @@ dist/
 
 # Vercel
 .vercel/
+
+# Playwright MCP-artefakter
+.playwright-mcp/

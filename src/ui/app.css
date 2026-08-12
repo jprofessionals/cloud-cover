@@ -15,6 +15,26 @@ body {
   font-family: system-ui, sans-serif;
 }
 
+#root {
+  min-height: 100vh;
+}
+
+h1, h2 {
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 1rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 1.5rem 0 0.5rem;
+}
+
+p {
+  margin: 0.25rem 0;
+}
+
 .app {
   display: grid;
   grid-template-columns: minmax(320px, 1fr) 1fr;
