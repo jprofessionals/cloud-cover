@@ -40,14 +40,16 @@ function isoDate(date: Date): string {
   return date.toISOString().slice(0, 10)
 }
 
-export async function fetchOpenMeteo(points: Point[], date: Date): Promise<CloudForecast[]> {
+export async function fetchOpenMeteo(points: Point[], from: Date, to: Date): Promise<CloudForecast[]> {
   if (points.length === 0) return []
   const params = new URLSearchParams({
     latitude: points.map((p) => p.lat.toFixed(4)).join(','),
     longitude: points.map((p) => p.lon.toFixed(4)).join(','),
     hourly: 'cloud_cover_low,cloud_cover_mid,cloud_cover_high',
-    start_date: isoDate(date),
-    end_date: isoDate(date),
+    // Hele vinduet, ikke bare én dato: et formørkelsesvindu som krysser
+    // UTC-midnatt trenger timer fra begge døgn.
+    start_date: isoDate(from),
+    end_date: isoDate(to),
     timezone: 'UTC',
     cell_selection: 'land',
   })

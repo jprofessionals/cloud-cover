@@ -4,7 +4,8 @@ import metFixture from './__fixtures__/met-complete.json'
 import openMeteoFixture from './__fixtures__/open-meteo-single.json'
 
 const POINT = { lat: 59.91, lon: 10.75 }
-const DATE = new Date('2026-08-12T12:00:00Z')
+const FROM = new Date('2026-08-12T11:00:00Z')
+const TO = new Date('2026-08-12T13:00:00Z')
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -17,7 +18,7 @@ const ok = (body: unknown) => new Response(JSON.stringify(body), { status: 200 }
 describe('fetchForecast', () => {
   it('bruker MET når MET svarer', async () => {
     stubFetch(() => ok(metFixture))
-    expect((await fetchForecast(POINT, DATE)).source).toBe('met')
+    expect((await fetchForecast(POINT, FROM, TO)).source).toBe('met')
   })
 
   it('faller tilbake til Open-Meteo når MET feiler', async () => {
@@ -26,7 +27,7 @@ describe('fetchForecast', () => {
         ? new Response('nei', { status: 503 })
         : ok(openMeteoFixture),
     )
-    expect((await fetchForecast(POINT, DATE)).source).toBe('open-meteo')
+    expect((await fetchForecast(POINT, FROM, TO)).source).toBe('open-meteo')
   })
 
   it('faller tilbake når MET svarer uten skylagsdata', async () => {
@@ -35,11 +36,11 @@ describe('fetchForecast', () => {
         ? ok({ properties: { timeseries: [] } })
         : ok(openMeteoFixture),
     )
-    expect((await fetchForecast(POINT, DATE)).source).toBe('open-meteo')
+    expect((await fetchForecast(POINT, FROM, TO)).source).toBe('open-meteo')
   })
 
   it('lar feilen boble når begge kilder feiler', async () => {
     stubFetch(() => new Response('nei', { status: 500 }))
-    await expect(fetchForecast(POINT, DATE)).rejects.toThrow()
+    await expect(fetchForecast(POINT, FROM, TO)).rejects.toThrow()
   })
 })

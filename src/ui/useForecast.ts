@@ -80,7 +80,11 @@ export function useForecast(place: Place | null): ForecastState {
       return
     }
 
-    fetchForecast({ lat: place.lat, lon: place.lon }, circumstances.peak.time)
+    fetchForecast(
+      { lat: place.lat, lon: place.lon },
+      circumstances.partialBegin.time,
+      circumstances.partialEnd.time,
+    )
       .then((forecast) => {
         if (!cancelled) setState(deriveState(circumstances, forecast))
       })
