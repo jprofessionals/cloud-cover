@@ -31,5 +31,12 @@ export function resample(samples: CloudSample[], stepMinutes: number): CloudSamp
       high: lerp(a.high, b.high, f),
     })
   }
+  // The loop above can overshoot past `end` and stop early when stepMinutes
+  // doesn't evenly divide the span (e.g. a 90 min span with a 20 min step
+  // steps 0, 20, ..., 80 and never reaches 90). Always emit the last input
+  // sample so the window's end is never silently dropped.
+  if (out[out.length - 1].time.getTime() !== end) {
+    out.push(sorted[sorted.length - 1])
+  }
   return out
 }

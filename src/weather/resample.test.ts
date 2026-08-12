@@ -32,4 +32,17 @@ describe('resample', () => {
   it('returnerer den ene prøven uendret når det bare finnes én', () => {
     expect(resample([hourly[0]], 15)).toEqual([hourly[0]])
   })
+
+  it('inkluderer alltid siste prøve når steget ikke deler tidsvinduet jevnt', () => {
+    const samples: CloudSample[] = [
+      { time: new Date('2026-08-12T18:00:00Z'), low: 0, mid: 10, high: 20 },
+      { time: new Date('2026-08-12T19:30:00Z'), low: 100, mid: 90, high: 80 },
+    ]
+    const out = resample(samples, 20)
+    const last = out[out.length - 1]
+    expect(last.time.getTime()).toBe(samples[1].time.getTime())
+    expect(last.low).toBe(samples[1].low)
+    expect(last.mid).toBe(samples[1].mid)
+    expect(last.high).toBe(samples[1].high)
+  })
 })
